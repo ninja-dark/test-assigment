@@ -15,7 +15,9 @@ type doubleLinkedList struct {
 }
 
 func newDoubleLinkedList() storage {
-	return &doubleLinkedList{}
+	return &doubleLinkedList{
+		track: list.New(),
+	}
 }
 
 func (d *doubleLinkedList) PushBack(ctx context.Context, song Song) error {
@@ -38,7 +40,7 @@ func (d *doubleLinkedList) NextSong(ctx context.Context) error {
 	return nil
 }
 
-func (d *doubleLinkedList) PrevSong(ctx context.Context) error {
+func (d *doubleLinkedList) PrevSong(ctx context.Context, song Song) error {
 	d.lock.Lock()
 	defer d.lock.Unlock()
 
