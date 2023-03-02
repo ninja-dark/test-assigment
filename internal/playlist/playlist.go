@@ -12,7 +12,7 @@ type Song struct {
 	Status   string
 }
 
-type playlist struct{
+type playlist struct {
 	Playlist
 	storage storage
 }
@@ -30,24 +30,22 @@ type Playlist interface {
 	Prev(ctx context.Context) error
 }
 
-func NewPlaylust() Playlist{
+func NewPlaylust() Playlist {
 	return newDoubLink()
 }
 
-
-func (p *playlist) Play(ctx context.Context) error{
+func (p *playlist) Play(ctx context.Context) error {
 	return nil
 }
-func (p *playlist) Pause(ctx context.Context) error{
+func (p *playlist) Pause(ctx context.Context) error {
 	return nil
 }
-func (p *playlist) AddSong(ctx context.Context, s Song) error{
+func (p *playlist) AddSong(ctx context.Context, s Song) error {
 	return nil
 }
-func (p *playlist) Next(ctx context.Context) error{
+func (p *playlist) Next(ctx context.Context) error {
 	return nil
 }
-func (p *playlist) Prev(ctx context.Context) error{
+func (p *playlist) Prev(ctx context.Context) error {
 	return nil
 }
-

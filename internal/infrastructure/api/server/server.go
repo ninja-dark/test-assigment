@@ -7,15 +7,15 @@ import (
 	"time"
 )
 
-type Server struct{
+type Server struct {
 	srv http.Server
 }
 
-func NewServer(addr string, h http.Handler) *Server{
+func NewServer(addr string, h http.Handler) *Server {
 	return &Server{
 		srv: http.Server{
-			Addr: addr,
-			Handler: h,
+			Addr:              addr,
+			Handler:           h,
 			ReadTimeout:       30 * time.Second,
 			WriteTimeout:      30 * time.Second,
 			ReadHeaderTimeout: 30 * time.Second,
@@ -23,7 +23,7 @@ func NewServer(addr string, h http.Handler) *Server{
 	}
 }
 
-func (s *Server) Start(ctx context.Context) error{
+func (s *Server) Start(ctx context.Context) error {
 	go func() {
 		<-ctx.Done()
 		stopCtx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
