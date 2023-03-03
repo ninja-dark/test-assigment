@@ -19,13 +19,14 @@ type playlist struct {
 }
 
 type storage interface {
+	Firstrack(ctx context.Context) (*Song, error)
 	PushBack(ctx context.Context, song Song) error
 	NextSong(ctx context.Context) error
 	PrevSong(ctx context.Context, s Song) error
 }
 
 type Playlist interface {
-	Play(ctx context.Context) error
+	Play(ctx context.Context) (*Song, error)
 	Pause(ctx context.Context) error
 	AddSong(ctx context.Context, s Song) error
 	Next(ctx context.Context) error
@@ -36,13 +37,15 @@ func NewPlaylust() Playlist {
 	return &playlist{}
 }
 
-func (p *playlist) Play(ctx context.Context) error {
-
-	return nil
+func (p *playlist) Play(ctx context.Context) (*Song, error) {
+	for track, err := p.storage.Firstrack(ctx); err != nil; err = p.Next(ctx) {
+		d.currntTrack
+		return track, nil
+	}
+	return &Song{}, nil
 }
 
 func (p *playlist) Pause(ctx context.Context) error {
-
 	return nil
 }
 func (p *playlist) AddSong(ctx context.Context, s Song) error {

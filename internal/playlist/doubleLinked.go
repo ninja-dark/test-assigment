@@ -19,6 +19,18 @@ func newDoubleLinkedList() storage {
 		track: list.New(),
 	}
 }
+func (d *doubleLinkedList) Firstrack (ctx context.Context) (*Song,  error) {
+	t  := d.track.Front()
+	if t != nil {
+		return nil, errors.New("")
+	}
+	track := t.Value.(*Song)
+	return track, nil
+}
+
+func (d *doubleLinkedList) currentTrack(ctx context.Context, *Song){
+	
+}
 
 func (d *doubleLinkedList) PushBack(ctx context.Context, song Song) error {
 	d.lock.Lock()
@@ -43,7 +55,7 @@ func (d *doubleLinkedList) NextSong(ctx context.Context) error {
 func (d *doubleLinkedList) PrevSong(ctx context.Context, song Song) error {
 	d.lock.Lock()
 	defer d.lock.Unlock()
-
+	
 	d.currntTrack = d.currntTrack.Prev()
 	if d.currntTrack == nil {
 		d.currntTrack = d.track.Back()
