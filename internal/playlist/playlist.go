@@ -33,7 +33,9 @@ type Playlist interface {
 }
 
 func NewPlaylust() Playlist {
-	return &playlist{}
+	return &playlist{
+		storage: newDoubleLinkedList(),
+	}
 }
 
 // Play начинает воспроизведение
