@@ -50,13 +50,16 @@ func (d *doubleLinkedList) NextSong(ctx context.Context) (*Song, error) {
 		return nil, errors.New("playlist is empty")
 	}
 	d.currntTrack = d.currntTrack.Next()
+	if d.currntTrack == nil {
+		d.currntTrack = d.track.Front()
+	}
 	track := d.currntTrack.Value.(*Song)
 
 	return track, nil
 }
 
 // PrevSong возвращает предыдущий элемент из списка
-func (d *doubleLinkedList) PrevSong(ctx context.Context) error {
+func (d *doubleLinkedList) PrevSong(ctx context.Context) (*Song, error) {
 	d.lock.Lock()
 	defer d.lock.Unlock()
 
@@ -64,5 +67,6 @@ func (d *doubleLinkedList) PrevSong(ctx context.Context) error {
 	if d.currntTrack == nil {
 		d.currntTrack = d.track.Back()
 	}
-	return nil
+	track := d.currntTrack.Value.(*Song)
+	return track, nil
 }
