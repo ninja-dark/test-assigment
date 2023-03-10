@@ -24,11 +24,11 @@ func main() {
 	defer conn.Close()
 
 	client := playclient.NewPlayClient(conn)
-	AddSong(10, client)
 	song, err := client.Player(context.TODO(), grpcService.PlayerRequest_play)
 	if err != nil {
 		log.Fatal(err)
 	}
+	AddSong(10, client)
 	fmt.Println(song)
 
 }
@@ -54,7 +54,7 @@ func AddSong(n int, client *playclient.PlayClient) {
 			},
 		)
 		if err != nil {
-			log.Fatal(err)
+			log.Print(err)
 		}
 	}
 }
