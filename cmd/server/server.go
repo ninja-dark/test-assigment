@@ -56,7 +56,7 @@ func main() {
 	plServer := playcase.NewServic(playlist, repo)
 	grpcService.RegisterPlayCaseServicServer(server, plServer)
 
-	lis, err := net.Listen("tcp", ":9000")
+	lis, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}

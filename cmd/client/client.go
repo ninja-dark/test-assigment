@@ -9,13 +9,14 @@ import (
 
 	"github.com/brianvoe/gofakeit"
 	"github.com/ninja-dark/test-assigment/grpcService"
+	"github.com/ninja-dark/test-assigment/internal/entity"
 	playclient "github.com/ninja-dark/test-assigment/internal/handler/client/playClient"
 	"google.golang.org/grpc"
 )
 
 func main() {
 
-	conn, err := grpc.Dial(":9000", grpc.WithInsecure())
+	conn, err := grpc.Dial(":8080", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %s", err)
 	}
@@ -23,7 +24,7 @@ func main() {
 	defer conn.Close()
 
 	client := playclient.NewPlayClient(conn)
-
+	AddSong(10, client)
 	song, err := client.Player(context.TODO(), grpcService.PlayerRequest_play)
 	if err != nil {
 		log.Fatal(err)
@@ -32,7 +33,7 @@ func main() {
 
 }
 
-func AddSong(n int, client *playclient.PlayClient ){
+func AddSong(n int, client *playclient.PlayClient) {
 	type song struct {
 		a int64
 		t string
@@ -46,7 +47,11 @@ func AddSong(n int, client *playclient.PlayClient ){
 	for _, s := range songs {
 		_, err := client.AddSong(
 			context.TODO(),
-			
+			&entity.Song{
+				ID:       s.a,
+				Name:     s.t,
+				Duration: s.d,
+			},
 		)
 		if err != nil {
 			log.Fatal(err)
