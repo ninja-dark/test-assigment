@@ -32,7 +32,8 @@ func (d *doubleLinkedList) Firstrack(ctx context.Context) (*Song, error) {
 }
 
 // PushBack вставляет новый элемент в конец списка
-func (d *doubleLinkedList) PushBack(ctx context.Context, song Song) *Song {
+func (d *doubleLinkedList) PushBack(ctx context.Context, song *Song) *Song {
+
 	d.lock.Lock()
 	defer d.lock.Unlock()
 

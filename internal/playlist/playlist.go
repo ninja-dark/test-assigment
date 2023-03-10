@@ -27,17 +27,17 @@ type playlist struct {
 
 type storage interface {
 	Firstrack(ctx context.Context) (*Song, error)
-	PushBack(ctx context.Context, song Song) *Song
+	PushBack(ctx context.Context, song *Song) *Song
 	NextSong(ctx context.Context) (*Song, error)
 	PrevSong(ctx context.Context) (*Song, error)
 }
 
 type Playlist interface {
-	Play(ctx context.Context, s Song) (*Song, error)
-	Pause(ctx context.Context, s Song) (*Song, error)
-	AddSong(ctx context.Context, s Song) *Song
+	Play(ctx context.Context) (*Song, error)
+	Pause(ctx context.Context) (*Song, error)
+	AddSong(ctx context.Context, s *Song) *Song
 	Next(ctx context.Context) (*Song, error)
-	Prev(ctx context.Context)  (*Song, error)
+	Prev(ctx context.Context) (*Song, error)
 }
 
 func NewPlaylist() Playlist {
@@ -48,7 +48,7 @@ func NewPlaylist() Playlist {
 }
 
 // Play начинает воспроизведение
-func (p *playlist) Play(ctx context.Context, s Song) (*Song, error) {
+func (p *playlist) Play(ctx context.Context) (*Song, error) {
 
 	switch p.status {
 	case playlistStatusStopped:
@@ -62,13 +62,13 @@ func (p *playlist) Play(ctx context.Context, s Song) (*Song, error) {
 			return track, ErrorPlaylistIsEmpty
 		}
 	case playlistStatusPaused:
-		track, err := p.Play(ctx, s)
+		track, err := p.Play(ctx)
 		if err != nil {
 			return track, ErrorPlaylistIsEmpty
 		}
 	case playlistStatusPlaying:
-		track, err := p.Play(ctx, s)
-		if err != nil{
+		track, err := p.Play(ctx)
+		if err != nil {
 			return track, ErrorPlayPlaylust
 		}
 	}
@@ -76,23 +76,21 @@ func (p *playlist) Play(ctx context.Context, s Song) (*Song, error) {
 }
 
 // Pause приостанавливает воспроизведение
-func (p *playlist) Pause(ctx context.Context, s Song) (*Song, error) {
-	switch p.status{
+func (p *playlist) Pause(ctx context.Context) (*Song, error) {
+	switch p.status {
 	case playlistStatusPlaying:
 		p.status = playlistStatusPaused
-		return &Song{
-			Duration: s.Duration,
-		}, nil
+		return &Song{}, nil
 	case playlistStatusPaused:
-		return &s, ErrorPausePlaylust
+		return &Song{}, ErrorPausePlaylust
 	case playlistStatusStopped:
-		return &s, ErrorStopPlaylust
+		return &Song{}, ErrorStopPlaylust
 	}
 	return &Song{}, nil
 }
 
 // AddSong добавляет в конец плейлиста песню
-func (p *playlist) AddSong(ctx context.Context, s Song) *Song {
+func (p *playlist) AddSong(ctx context.Context, s *Song) *Song {
 	track := p.storage.PushBack(ctx, s)
 	return track
 }
@@ -101,18 +99,24 @@ func (p *playlist) AddSong(ctx context.Context, s Song) *Song {
 func (p *playlist) Next(ctx context.Context) (*Song, error) {
 	track, err := p.storage.NextSong(ctx)
 	if err != nil {
-		return &Song{}, ErrorPlaylistIsEmpty
+		return track, ErrorPlaylistIsEmpty
 	}
-	t, err := p.Play(ctx, *track)
+	t, err := p.Play(ctx)
+	if err != nil {
+		return t, ErrorFindNextSong
+	}
 	return t, nil
 }
 
 // Prev воспроизвести предыдущую песню
-func (p *playlist) Prev(ctx context.Context)  (*Song, error) {
+func (p *playlist) Prev(ctx context.Context) (*Song, error) {
 	track, err := p.storage.PrevSong(ctx)
 	if err != nil {
 		return &Song{}, ErrorFindPrevSong
 	}
-	t, err := p.Play(ctx, *track)
-	return t, nil
+	t, err := p.Play(ctx)
+	if err != nil {
+		return t, ErrorFindPrevSong
+	}
+	return track, nil
 }

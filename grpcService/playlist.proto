@@ -1,0 +1,64 @@
+syntax = "proto3";
+package playcase;
+
+import "google/protobuf/empty.proto";
+option go_package = "./grpcService";
+
+message Song{
+    int64 id = 1;
+    string name = 2;
+    int64 duration = 3;
+}
+
+
+service playCaseServic {
+    rpc AddSong(AddSongRequest) returns (AddSongResponse){}
+    rpc ReadSong(google.protobuf.Empty) returns (ReadSongResponse){}
+    rpc UpdateSong(UpdateSongRequest) returns (UpdateSongResponse){}
+    rpc DeleteSong(DeleteSongRequest) returns (DeleteSongResponse){}
+    rpc Player(PlayerRequest) returns(Status){}
+}
+
+
+message AddSongRequest {
+    Song song = 1;
+}
+
+message AddSongResponse {
+    int64 id = 1;
+}
+
+
+message ReadSongResponse{
+   repeated Song song = 1;
+}
+
+message UpdateSongRequest {
+    Song song = 1;
+}
+
+message UpdateSongResponse {
+    int64 id = 1;
+}
+
+message DeleteSongRequest {
+    int64 id = 1;
+}
+
+message DeleteSongResponse {
+    int64 id = 1;
+}
+
+message PlayerRequest {
+    enum StatusPlayer {
+        play = 0;
+        pause = 1;
+        next = 2;
+        prev = 3;
+    }
+    StatusPlayer status = 1;
+}
+message Status{
+    string status = 1;
+    string name = 2;
+}
