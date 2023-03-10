@@ -42,7 +42,7 @@ func AddSong(n int, client *playclient.PlayClient) {
 
 	songs := []song{}
 	for i := n; i > 0; i-- {
-		songs = append(songs, song{gofakeit.Int64(), gofakeit.Name(), time.Second * time.Duration(rand.Intn(150))})
+		songs = append(songs, song{gofakeit.Int64(), gofakeit.Name(), time.Second * time.Duration(rand.Intn(50))})
 	}
 	for _, s := range songs {
 		_, err := client.AddSong(
