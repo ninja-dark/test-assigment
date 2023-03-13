@@ -39,7 +39,7 @@ func (s *servic) AddSong(ctx context.Context, request *grpcService.AddSongReques
 		Name:     t.Title,
 		Duration: song.Duration,
 	}
-	track := s.playlist.AddSong(ctx, &songPlaylist) 
+	track := s.playlist.AddSong(ctx, &songPlaylist)
 	fmt.Printf(track.Name)
 	err = s.repo.Add(ctx, song)
 	if err != nil {
@@ -178,7 +178,7 @@ func (s *servic) Next(ctx context.Context, request *grpcService.NextRequest) (*g
 			Success: false,
 		}, fmt.Errorf("next song error: %w", err)
 	}
-	
+
 	return &grpcService.NextResponse{
 		Success: true,
 		Name:    song.Name,

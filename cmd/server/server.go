@@ -5,13 +5,13 @@ import (
 	"log"
 	"net"
 
+	_ "github.com/lib/pq"
 	"github.com/ninja-dark/test-assigment/grpcService"
 	playcase "github.com/ninja-dark/test-assigment/internal/handler/server/playCase"
 	"github.com/ninja-dark/test-assigment/internal/infrastructure/api/db"
 	"github.com/ninja-dark/test-assigment/internal/playlist"
 	"github.com/pressly/goose"
 	"google.golang.org/grpc"
-	_ "github.com/lib/pq"
 )
 
 var dbConfig = &db.Config{
@@ -19,7 +19,7 @@ var dbConfig = &db.Config{
 	Port:     "5432",
 	User:     "postgres",
 	Password: "postgres",
-	DBName: "",
+	DBName:   "",
 }
 
 func main() {

@@ -13,7 +13,7 @@ type Config struct {
 	Port     string
 	User     string
 	Password string
-	DBName string
+	DBName   string
 }
 
 func NewPoolConfig(cfg *Config) (*pgxpool.Config, error) {

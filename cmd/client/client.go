@@ -43,7 +43,7 @@ func main() {
 		log.Fatalf("failed to Next: %v", err)
 	}
 	log.Printf("Next response: %t%v", nextResp, nameNext)
-	
+
 	// вызов метода Previous
 
 	previousResp, namePrev, err := client.Previous(context.Background())
@@ -52,7 +52,7 @@ func main() {
 	}
 	log.Printf("Previous response: %t%v", previousResp, namePrev)
 	*/
-	
+
 }
 
 func AddSong(n int, client *playclient.PlayClient) {
