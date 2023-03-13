@@ -34,7 +34,7 @@ type storage interface {
 
 type Playlist interface {
 	Play(ctx context.Context) (*Song, error)
-	Pause(ctx context.Context) (*Song, error)
+	Pause(ctx context.Context) error
 	AddSong(ctx context.Context, s *Song) *Song
 	Next(ctx context.Context) (*Song, error)
 	Prev(ctx context.Context) (*Song, error)
@@ -76,17 +76,17 @@ func (p *playlist) Play(ctx context.Context) (*Song, error) {
 }
 
 // Pause приостанавливает воспроизведение
-func (p *playlist) Pause(ctx context.Context) (*Song, error) {
+func (p *playlist) Pause(ctx context.Context) error {
 	switch p.status {
 	case playlistStatusPlaying:
 		p.status = playlistStatusPaused
-		return &Song{}, nil
+		return nil
 	case playlistStatusPaused:
-		return &Song{}, ErrorPausePlaylust
+		return ErrorPausePlaylust
 	case playlistStatusStopped:
-		return &Song{}, ErrorStopPlaylust
+		return ErrorStopPlaylust
 	}
-	return &Song{}, nil
+	return nil
 }
 
 // AddSong добавляет в конец плейлиста песню

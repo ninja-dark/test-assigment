@@ -1,64 +1,81 @@
 syntax = "proto3";
 package playcase;
 
-import "google/protobuf/empty.proto";
 option go_package = "./grpcService";
 
-message Song{
-    int64 id = 1;
-    string name = 2;
-    int64 duration = 3;
+service MusicPlaylist {
+  rpc AddSong(AddSongRequest) returns (AddSongResponse) {}
+  rpc GetSongs(GetSongsRequest) returns (GetSongsResponse) {}
+  rpc UpdateSong(UpdateSongRequest) returns (UpdateSongResponse) {}
+  rpc DeleteSong(DeleteSongRequest) returns (DeleteSongResponse) {}
+  rpc Play(PlayRequest) returns (PlayResponse) {}
+  rpc Pause(PauseRequest) returns (PauseResponse) {}
+  rpc Next(NextRequest) returns (NextResponse) {}
+  rpc Previous(PreviousRequest) returns (PreviousResponse) {}
 }
 
-
-service playCaseServic {
-    rpc AddSong(AddSongRequest) returns (AddSongResponse){}
-    rpc ReadSong(google.protobuf.Empty) returns (ReadSongResponse){}
-    rpc UpdateSong(UpdateSongRequest) returns (UpdateSongResponse){}
-    rpc DeleteSong(DeleteSongRequest) returns (DeleteSongResponse){}
-    rpc Player(PlayerRequest) returns(Status){}
+message Song {
+  int64 id = 1;
+  string title = 2;
+  int64 duration = 3;
+  repeated string tags = 4;
 }
-
 
 message AddSongRequest {
-    Song song = 1;
+  Song song = 1;
 }
 
 message AddSongResponse {
-    int64 id = 1;
+  bool success = 1;
 }
 
+message GetSongsRequest {}
 
-message ReadSongResponse{
-   repeated Song song = 1;
+message GetSongsResponse {
+ repeated Song song = 1;
 }
 
 message UpdateSongRequest {
-    Song song = 1;
+  int64 id = 1;
+  Song song = 2;
 }
 
 message UpdateSongResponse {
-    int64 id = 1;
+  bool success = 1;
+  int64 id = 2;
 }
 
 message DeleteSongRequest {
-    int64 id = 1;
+  int64 id = 1;
 }
 
 message DeleteSongResponse {
-    int64 id = 1;
+  bool success = 1;
 }
 
-message PlayerRequest {
-    enum StatusPlayer {
-        play = 0;
-        pause = 1;
-        next = 2;
-        prev = 3;
-    }
-    StatusPlayer status = 1;
+message PlayRequest {}
+
+message PlayResponse {
+  bool success = 1;
+  string name = 2;
 }
-message Status{
-    string status = 1;
-    string name = 2;
+
+message PauseRequest {}
+
+message PauseResponse {
+  bool success = 1;
+}
+
+message NextRequest {}
+
+message NextResponse {
+  bool success = 1;
+  string name = 2;
+}
+
+message PreviousRequest {}
+
+message PreviousResponse {
+  bool success = 1;
+  string name = 2;
 }

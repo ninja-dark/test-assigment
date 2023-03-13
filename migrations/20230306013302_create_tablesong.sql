@@ -3,7 +3,7 @@
 CREATE TABLE playlist (
     id SERIAL PRIMARY KEY,
     name VARCHAR NOT NULL,
-    duration int NOT NULL
+    duration bigint NOT NULL
 );
 -- +goose StatementEnd
 

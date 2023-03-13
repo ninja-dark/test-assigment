@@ -9,7 +9,6 @@ package grpcService
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
 	sync "sync"
 )
@@ -21,66 +20,15 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type PlayerRequest_StatusPlayer int32
-
-const (
-	PlayerRequest_play  PlayerRequest_StatusPlayer = 0
-	PlayerRequest_pause PlayerRequest_StatusPlayer = 1
-	PlayerRequest_next  PlayerRequest_StatusPlayer = 2
-	PlayerRequest_prev  PlayerRequest_StatusPlayer = 3
-)
-
-// Enum value maps for PlayerRequest_StatusPlayer.
-var (
-	PlayerRequest_StatusPlayer_name = map[int32]string{
-		0: "play",
-		1: "pause",
-		2: "next",
-		3: "prev",
-	}
-	PlayerRequest_StatusPlayer_value = map[string]int32{
-		"play":  0,
-		"pause": 1,
-		"next":  2,
-		"prev":  3,
-	}
-)
-
-func (x PlayerRequest_StatusPlayer) Enum() *PlayerRequest_StatusPlayer {
-	p := new(PlayerRequest_StatusPlayer)
-	*p = x
-	return p
-}
-
-func (x PlayerRequest_StatusPlayer) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (PlayerRequest_StatusPlayer) Descriptor() protoreflect.EnumDescriptor {
-	return file_playlist_proto_enumTypes[0].Descriptor()
-}
-
-func (PlayerRequest_StatusPlayer) Type() protoreflect.EnumType {
-	return &file_playlist_proto_enumTypes[0]
-}
-
-func (x PlayerRequest_StatusPlayer) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use PlayerRequest_StatusPlayer.Descriptor instead.
-func (PlayerRequest_StatusPlayer) EnumDescriptor() ([]byte, []int) {
-	return file_playlist_proto_rawDescGZIP(), []int{8, 0}
-}
-
 type Song struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id       int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name     string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Duration int64  `protobuf:"varint,3,opt,name=duration,proto3" json:"duration,omitempty"`
+	Id       int64    `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Title    string   `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Duration int64    `protobuf:"varint,3,opt,name=duration,proto3" json:"duration,omitempty"`
+	Tags     []string `protobuf:"bytes,4,rep,name=tags,proto3" json:"tags,omitempty"`
 }
 
 func (x *Song) Reset() {
@@ -122,9 +70,9 @@ func (x *Song) GetId() int64 {
 	return 0
 }
 
-func (x *Song) GetName() string {
+func (x *Song) GetTitle() string {
 	if x != nil {
-		return x.Name
+		return x.Title
 	}
 	return ""
 }
@@ -134,6 +82,13 @@ func (x *Song) GetDuration() int64 {
 		return x.Duration
 	}
 	return 0
+}
+
+func (x *Song) GetTags() []string {
+	if x != nil {
+		return x.Tags
+	}
+	return nil
 }
 
 type AddSongRequest struct {
@@ -188,7 +143,7 @@ type AddSongResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id int64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 }
 
 func (x *AddSongResponse) Reset() {
@@ -223,23 +178,21 @@ func (*AddSongResponse) Descriptor() ([]byte, []int) {
 	return file_playlist_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *AddSongResponse) GetId() int64 {
+func (x *AddSongResponse) GetSuccess() bool {
 	if x != nil {
-		return x.Id
+		return x.Success
 	}
-	return 0
+	return false
 }
 
-type ReadSongResponse struct {
+type GetSongsRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
-
-	Song []*Song `protobuf:"bytes,1,rep,name=song,proto3" json:"song,omitempty"`
 }
 
-func (x *ReadSongResponse) Reset() {
-	*x = ReadSongResponse{}
+func (x *GetSongsRequest) Reset() {
+	*x = GetSongsRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_playlist_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -247,13 +200,13 @@ func (x *ReadSongResponse) Reset() {
 	}
 }
 
-func (x *ReadSongResponse) String() string {
+func (x *GetSongsRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ReadSongResponse) ProtoMessage() {}
+func (*GetSongsRequest) ProtoMessage() {}
 
-func (x *ReadSongResponse) ProtoReflect() protoreflect.Message {
+func (x *GetSongsRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_playlist_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -265,12 +218,52 @@ func (x *ReadSongResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ReadSongResponse.ProtoReflect.Descriptor instead.
-func (*ReadSongResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetSongsRequest.ProtoReflect.Descriptor instead.
+func (*GetSongsRequest) Descriptor() ([]byte, []int) {
 	return file_playlist_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *ReadSongResponse) GetSong() []*Song {
+type GetSongsResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Song []*Song `protobuf:"bytes,1,rep,name=song,proto3" json:"song,omitempty"`
+}
+
+func (x *GetSongsResponse) Reset() {
+	*x = GetSongsResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_playlist_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetSongsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetSongsResponse) ProtoMessage() {}
+
+func (x *GetSongsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_playlist_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetSongsResponse.ProtoReflect.Descriptor instead.
+func (*GetSongsResponse) Descriptor() ([]byte, []int) {
+	return file_playlist_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetSongsResponse) GetSong() []*Song {
 	if x != nil {
 		return x.Song
 	}
@@ -282,13 +275,14 @@ type UpdateSongRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Song *Song `protobuf:"bytes,1,opt,name=song,proto3" json:"song,omitempty"`
+	Id   int64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Song *Song `protobuf:"bytes,2,opt,name=song,proto3" json:"song,omitempty"`
 }
 
 func (x *UpdateSongRequest) Reset() {
 	*x = UpdateSongRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_playlist_proto_msgTypes[4]
+		mi := &file_playlist_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -301,7 +295,7 @@ func (x *UpdateSongRequest) String() string {
 func (*UpdateSongRequest) ProtoMessage() {}
 
 func (x *UpdateSongRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_playlist_proto_msgTypes[4]
+	mi := &file_playlist_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -314,7 +308,14 @@ func (x *UpdateSongRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateSongRequest.ProtoReflect.Descriptor instead.
 func (*UpdateSongRequest) Descriptor() ([]byte, []int) {
-	return file_playlist_proto_rawDescGZIP(), []int{4}
+	return file_playlist_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *UpdateSongRequest) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
 }
 
 func (x *UpdateSongRequest) GetSong() *Song {
@@ -329,13 +330,14 @@ type UpdateSongResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id int64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Success bool  `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Id      int64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
 }
 
 func (x *UpdateSongResponse) Reset() {
 	*x = UpdateSongResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_playlist_proto_msgTypes[5]
+		mi := &file_playlist_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -348,7 +350,7 @@ func (x *UpdateSongResponse) String() string {
 func (*UpdateSongResponse) ProtoMessage() {}
 
 func (x *UpdateSongResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_playlist_proto_msgTypes[5]
+	mi := &file_playlist_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -361,7 +363,14 @@ func (x *UpdateSongResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateSongResponse.ProtoReflect.Descriptor instead.
 func (*UpdateSongResponse) Descriptor() ([]byte, []int) {
-	return file_playlist_proto_rawDescGZIP(), []int{5}
+	return file_playlist_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *UpdateSongResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
 }
 
 func (x *UpdateSongResponse) GetId() int64 {
@@ -382,7 +391,7 @@ type DeleteSongRequest struct {
 func (x *DeleteSongRequest) Reset() {
 	*x = DeleteSongRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_playlist_proto_msgTypes[6]
+		mi := &file_playlist_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -395,7 +404,7 @@ func (x *DeleteSongRequest) String() string {
 func (*DeleteSongRequest) ProtoMessage() {}
 
 func (x *DeleteSongRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_playlist_proto_msgTypes[6]
+	mi := &file_playlist_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -408,7 +417,7 @@ func (x *DeleteSongRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteSongRequest.ProtoReflect.Descriptor instead.
 func (*DeleteSongRequest) Descriptor() ([]byte, []int) {
-	return file_playlist_proto_rawDescGZIP(), []int{6}
+	return file_playlist_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *DeleteSongRequest) GetId() int64 {
@@ -423,13 +432,13 @@ type DeleteSongResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id int64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 }
 
 func (x *DeleteSongResponse) Reset() {
 	*x = DeleteSongResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_playlist_proto_msgTypes[7]
+		mi := &file_playlist_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -442,7 +451,7 @@ func (x *DeleteSongResponse) String() string {
 func (*DeleteSongResponse) ProtoMessage() {}
 
 func (x *DeleteSongResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_playlist_proto_msgTypes[7]
+	mi := &file_playlist_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -455,74 +464,24 @@ func (x *DeleteSongResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteSongResponse.ProtoReflect.Descriptor instead.
 func (*DeleteSongResponse) Descriptor() ([]byte, []int) {
-	return file_playlist_proto_rawDescGZIP(), []int{7}
-}
-
-func (x *DeleteSongResponse) GetId() int64 {
-	if x != nil {
-		return x.Id
-	}
-	return 0
-}
-
-type PlayerRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Status PlayerRequest_StatusPlayer `protobuf:"varint,1,opt,name=status,proto3,enum=playcase.PlayerRequest_StatusPlayer" json:"status,omitempty"`
-}
-
-func (x *PlayerRequest) Reset() {
-	*x = PlayerRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_playlist_proto_msgTypes[8]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *PlayerRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*PlayerRequest) ProtoMessage() {}
-
-func (x *PlayerRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_playlist_proto_msgTypes[8]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use PlayerRequest.ProtoReflect.Descriptor instead.
-func (*PlayerRequest) Descriptor() ([]byte, []int) {
 	return file_playlist_proto_rawDescGZIP(), []int{8}
 }
 
-func (x *PlayerRequest) GetStatus() PlayerRequest_StatusPlayer {
+func (x *DeleteSongResponse) GetSuccess() bool {
 	if x != nil {
-		return x.Status
+		return x.Success
 	}
-	return PlayerRequest_play
+	return false
 }
 
-type Status struct {
+type PlayRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
-
-	Status string `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
-	Name   string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 }
 
-func (x *Status) Reset() {
-	*x = Status{}
+func (x *PlayRequest) Reset() {
+	*x = PlayRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_playlist_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -530,13 +489,13 @@ func (x *Status) Reset() {
 	}
 }
 
-func (x *Status) String() string {
+func (x *PlayRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Status) ProtoMessage() {}
+func (*PlayRequest) ProtoMessage() {}
 
-func (x *Status) ProtoReflect() protoreflect.Message {
+func (x *PlayRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_playlist_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -548,19 +507,331 @@ func (x *Status) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Status.ProtoReflect.Descriptor instead.
-func (*Status) Descriptor() ([]byte, []int) {
+// Deprecated: Use PlayRequest.ProtoReflect.Descriptor instead.
+func (*PlayRequest) Descriptor() ([]byte, []int) {
 	return file_playlist_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *Status) GetStatus() string {
+type PlayResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Success bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Name    string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+}
+
+func (x *PlayResponse) Reset() {
+	*x = PlayResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_playlist_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PlayResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PlayResponse) ProtoMessage() {}
+
+func (x *PlayResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_playlist_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PlayResponse.ProtoReflect.Descriptor instead.
+func (*PlayResponse) Descriptor() ([]byte, []int) {
+	return file_playlist_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *PlayResponse) GetSuccess() bool {
 	if x != nil {
-		return x.Status
+		return x.Success
+	}
+	return false
+}
+
+func (x *PlayResponse) GetName() string {
+	if x != nil {
+		return x.Name
 	}
 	return ""
 }
 
-func (x *Status) GetName() string {
+type PauseRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *PauseRequest) Reset() {
+	*x = PauseRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_playlist_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PauseRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PauseRequest) ProtoMessage() {}
+
+func (x *PauseRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_playlist_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PauseRequest.ProtoReflect.Descriptor instead.
+func (*PauseRequest) Descriptor() ([]byte, []int) {
+	return file_playlist_proto_rawDescGZIP(), []int{11}
+}
+
+type PauseResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+}
+
+func (x *PauseResponse) Reset() {
+	*x = PauseResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_playlist_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PauseResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PauseResponse) ProtoMessage() {}
+
+func (x *PauseResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_playlist_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PauseResponse.ProtoReflect.Descriptor instead.
+func (*PauseResponse) Descriptor() ([]byte, []int) {
+	return file_playlist_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *PauseResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+type NextRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *NextRequest) Reset() {
+	*x = NextRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_playlist_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *NextRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NextRequest) ProtoMessage() {}
+
+func (x *NextRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_playlist_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NextRequest.ProtoReflect.Descriptor instead.
+func (*NextRequest) Descriptor() ([]byte, []int) {
+	return file_playlist_proto_rawDescGZIP(), []int{13}
+}
+
+type NextResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Success bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Name    string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+}
+
+func (x *NextResponse) Reset() {
+	*x = NextResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_playlist_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *NextResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NextResponse) ProtoMessage() {}
+
+func (x *NextResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_playlist_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NextResponse.ProtoReflect.Descriptor instead.
+func (*NextResponse) Descriptor() ([]byte, []int) {
+	return file_playlist_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *NextResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *NextResponse) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+type PreviousRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *PreviousRequest) Reset() {
+	*x = PreviousRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_playlist_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PreviousRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PreviousRequest) ProtoMessage() {}
+
+func (x *PreviousRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_playlist_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PreviousRequest.ProtoReflect.Descriptor instead.
+func (*PreviousRequest) Descriptor() ([]byte, []int) {
+	return file_playlist_proto_rawDescGZIP(), []int{15}
+}
+
+type PreviousResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Success bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Name    string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+}
+
+func (x *PreviousResponse) Reset() {
+	*x = PreviousResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_playlist_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PreviousResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PreviousResponse) ProtoMessage() {}
+
+func (x *PreviousResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_playlist_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PreviousResponse.ProtoReflect.Descriptor instead.
+func (*PreviousResponse) Descriptor() ([]byte, []int) {
+	return file_playlist_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *PreviousResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *PreviousResponse) GetName() string {
 	if x != nil {
 		return x.Name
 	}
@@ -571,69 +842,92 @@ var File_playlist_proto protoreflect.FileDescriptor
 
 var file_playlist_proto_rawDesc = []byte{
 	0x0a, 0x0e, 0x70, 0x6c, 0x61, 0x79, 0x6c, 0x69, 0x73, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x12, 0x08, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61, 0x73, 0x65, 0x1a, 0x1b, 0x67, 0x6f, 0x6f, 0x67,
-	0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x65, 0x6d, 0x70, 0x74,
-	0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x46, 0x0a, 0x04, 0x53, 0x6f, 0x6e, 0x67, 0x12,
-	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x12,
-	0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e,
-	0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18,
-	0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x08, 0x64, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22,
-	0x34, 0x0a, 0x0e, 0x41, 0x64, 0x64, 0x53, 0x6f, 0x6e, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x12, 0x22, 0x0a, 0x04, 0x73, 0x6f, 0x6e, 0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
-	0x0e, 0x2e, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61, 0x73, 0x65, 0x2e, 0x53, 0x6f, 0x6e, 0x67, 0x52,
-	0x04, 0x73, 0x6f, 0x6e, 0x67, 0x22, 0x21, 0x0a, 0x0f, 0x41, 0x64, 0x64, 0x53, 0x6f, 0x6e, 0x67,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x22, 0x36, 0x0a, 0x10, 0x52, 0x65, 0x61, 0x64,
-	0x53, 0x6f, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x22, 0x0a, 0x04,
-	0x73, 0x6f, 0x6e, 0x67, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x70, 0x6c, 0x61,
-	0x79, 0x63, 0x61, 0x73, 0x65, 0x2e, 0x53, 0x6f, 0x6e, 0x67, 0x52, 0x04, 0x73, 0x6f, 0x6e, 0x67,
-	0x22, 0x37, 0x0a, 0x11, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x6f, 0x6e, 0x67, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x22, 0x0a, 0x04, 0x73, 0x6f, 0x6e, 0x67, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61, 0x73, 0x65, 0x2e, 0x53,
-	0x6f, 0x6e, 0x67, 0x52, 0x04, 0x73, 0x6f, 0x6e, 0x67, 0x22, 0x24, 0x0a, 0x12, 0x55, 0x70, 0x64,
-	0x61, 0x74, 0x65, 0x53, 0x6f, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
-	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x22,
+	0x12, 0x08, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61, 0x73, 0x65, 0x22, 0x5c, 0x0a, 0x04, 0x53, 0x6f,
+	0x6e, 0x67, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02,
+	0x69, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x75, 0x72, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x08, 0x64, 0x75, 0x72, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x61, 0x67, 0x73, 0x18, 0x04, 0x20, 0x03,
+	0x28, 0x09, 0x52, 0x04, 0x74, 0x61, 0x67, 0x73, 0x22, 0x34, 0x0a, 0x0e, 0x41, 0x64, 0x64, 0x53,
+	0x6f, 0x6e, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x22, 0x0a, 0x04, 0x73, 0x6f,
+	0x6e, 0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x70, 0x6c, 0x61, 0x79, 0x63,
+	0x61, 0x73, 0x65, 0x2e, 0x53, 0x6f, 0x6e, 0x67, 0x52, 0x04, 0x73, 0x6f, 0x6e, 0x67, 0x22, 0x2b,
+	0x0a, 0x0f, 0x41, 0x64, 0x64, 0x53, 0x6f, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x22, 0x11, 0x0a, 0x0f, 0x47,
+	0x65, 0x74, 0x53, 0x6f, 0x6e, 0x67, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x36,
+	0x0a, 0x10, 0x47, 0x65, 0x74, 0x53, 0x6f, 0x6e, 0x67, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x22, 0x0a, 0x04, 0x73, 0x6f, 0x6e, 0x67, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x0e, 0x2e, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61, 0x73, 0x65, 0x2e, 0x53, 0x6f, 0x6e, 0x67,
+	0x52, 0x04, 0x73, 0x6f, 0x6e, 0x67, 0x22, 0x47, 0x0a, 0x11, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
+	0x53, 0x6f, 0x6e, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x12, 0x22, 0x0a, 0x04, 0x73,
+	0x6f, 0x6e, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x70, 0x6c, 0x61, 0x79,
+	0x63, 0x61, 0x73, 0x65, 0x2e, 0x53, 0x6f, 0x6e, 0x67, 0x52, 0x04, 0x73, 0x6f, 0x6e, 0x67, 0x22,
+	0x3e, 0x0a, 0x12, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x6f, 0x6e, 0x67, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x12,
+	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x22,
 	0x23, 0x0a, 0x11, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x53, 0x6f, 0x6e, 0x67, 0x52, 0x65, 0x71,
 	0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03,
-	0x52, 0x02, 0x69, 0x64, 0x22, 0x24, 0x0a, 0x12, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x53, 0x6f,
-	0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x22, 0x86, 0x01, 0x0a, 0x0d, 0x50,
-	0x6c, 0x61, 0x79, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x3c, 0x0a, 0x06,
-	0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x24, 0x2e, 0x70,
-	0x6c, 0x61, 0x79, 0x63, 0x61, 0x73, 0x65, 0x2e, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x50, 0x6c, 0x61, 0x79,
-	0x65, 0x72, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x22, 0x37, 0x0a, 0x0c, 0x53, 0x74,
-	0x61, 0x74, 0x75, 0x73, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x12, 0x08, 0x0a, 0x04, 0x70, 0x6c,
-	0x61, 0x79, 0x10, 0x00, 0x12, 0x09, 0x0a, 0x05, 0x70, 0x61, 0x75, 0x73, 0x65, 0x10, 0x01, 0x12,
-	0x08, 0x0a, 0x04, 0x6e, 0x65, 0x78, 0x74, 0x10, 0x02, 0x12, 0x08, 0x0a, 0x04, 0x70, 0x72, 0x65,
-	0x76, 0x10, 0x03, 0x22, 0x34, 0x0a, 0x06, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x16, 0x0a,
-	0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73,
-	0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x32, 0xe1, 0x02, 0x0a, 0x0e, 0x70, 0x6c,
-	0x61, 0x79, 0x43, 0x61, 0x73, 0x65, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x12, 0x40, 0x0a, 0x07,
-	0x41, 0x64, 0x64, 0x53, 0x6f, 0x6e, 0x67, 0x12, 0x18, 0x2e, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61,
-	0x73, 0x65, 0x2e, 0x41, 0x64, 0x64, 0x53, 0x6f, 0x6e, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x1a, 0x19, 0x2e, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61, 0x73, 0x65, 0x2e, 0x41, 0x64, 0x64,
-	0x53, 0x6f, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x40,
-	0x0a, 0x08, 0x52, 0x65, 0x61, 0x64, 0x53, 0x6f, 0x6e, 0x67, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f,
-	0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70,
-	0x74, 0x79, 0x1a, 0x1a, 0x2e, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61, 0x73, 0x65, 0x2e, 0x52, 0x65,
-	0x61, 0x64, 0x53, 0x6f, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
-	0x12, 0x49, 0x0a, 0x0a, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x6f, 0x6e, 0x67, 0x12, 0x1b,
-	0x2e, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61, 0x73, 0x65, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
-	0x53, 0x6f, 0x6e, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c, 0x2e, 0x70, 0x6c,
-	0x61, 0x79, 0x63, 0x61, 0x73, 0x65, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x6f, 0x6e,
-	0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x49, 0x0a, 0x0a, 0x44,
-	0x65, 0x6c, 0x65, 0x74, 0x65, 0x53, 0x6f, 0x6e, 0x67, 0x12, 0x1b, 0x2e, 0x70, 0x6c, 0x61, 0x79,
-	0x63, 0x61, 0x73, 0x65, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x53, 0x6f, 0x6e, 0x67, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c, 0x2e, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61, 0x73,
-	0x65, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x53, 0x6f, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x35, 0x0a, 0x06, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72,
-	0x12, 0x17, 0x2e, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61, 0x73, 0x65, 0x2e, 0x50, 0x6c, 0x61, 0x79,
-	0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x10, 0x2e, 0x70, 0x6c, 0x61, 0x79,
-	0x63, 0x61, 0x73, 0x65, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x22, 0x00, 0x42, 0x0f, 0x5a,
-	0x0d, 0x2e, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x52, 0x02, 0x69, 0x64, 0x22, 0x2e, 0x0a, 0x12, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x53, 0x6f,
+	0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75,
+	0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63,
+	0x63, 0x65, 0x73, 0x73, 0x22, 0x0d, 0x0a, 0x0b, 0x50, 0x6c, 0x61, 0x79, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x22, 0x3c, 0x0a, 0x0c, 0x50, 0x6c, 0x61, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x12, 0x12, 0x0a,
+	0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d,
+	0x65, 0x22, 0x0e, 0x0a, 0x0c, 0x50, 0x61, 0x75, 0x73, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x22, 0x29, 0x0a, 0x0d, 0x50, 0x61, 0x75, 0x73, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x22, 0x0d, 0x0a, 0x0b,
+	0x4e, 0x65, 0x78, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x3c, 0x0a, 0x0c, 0x4e,
+	0x65, 0x78, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73,
+	0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75,
+	0x63, 0x63, 0x65, 0x73, 0x73, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0x11, 0x0a, 0x0f, 0x50, 0x72, 0x65,
+	0x76, 0x69, 0x6f, 0x75, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x40, 0x0a, 0x10,
+	0x50, 0x72, 0x65, 0x76, 0x69, 0x6f, 0x75, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61,
+	0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x32, 0x9f,
+	0x04, 0x0a, 0x0d, 0x4d, 0x75, 0x73, 0x69, 0x63, 0x50, 0x6c, 0x61, 0x79, 0x6c, 0x69, 0x73, 0x74,
+	0x12, 0x40, 0x0a, 0x07, 0x41, 0x64, 0x64, 0x53, 0x6f, 0x6e, 0x67, 0x12, 0x18, 0x2e, 0x70, 0x6c,
+	0x61, 0x79, 0x63, 0x61, 0x73, 0x65, 0x2e, 0x41, 0x64, 0x64, 0x53, 0x6f, 0x6e, 0x67, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61, 0x73, 0x65,
+	0x2e, 0x41, 0x64, 0x64, 0x53, 0x6f, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x00, 0x12, 0x43, 0x0a, 0x08, 0x47, 0x65, 0x74, 0x53, 0x6f, 0x6e, 0x67, 0x73, 0x12, 0x19,
+	0x2e, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61, 0x73, 0x65, 0x2e, 0x47, 0x65, 0x74, 0x53, 0x6f, 0x6e,
+	0x67, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1a, 0x2e, 0x70, 0x6c, 0x61, 0x79,
+	0x63, 0x61, 0x73, 0x65, 0x2e, 0x47, 0x65, 0x74, 0x53, 0x6f, 0x6e, 0x67, 0x73, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x49, 0x0a, 0x0a, 0x55, 0x70, 0x64, 0x61, 0x74,
+	0x65, 0x53, 0x6f, 0x6e, 0x67, 0x12, 0x1b, 0x2e, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61, 0x73, 0x65,
+	0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x6f, 0x6e, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x1c, 0x2e, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61, 0x73, 0x65, 0x2e, 0x55, 0x70,
+	0x64, 0x61, 0x74, 0x65, 0x53, 0x6f, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x00, 0x12, 0x49, 0x0a, 0x0a, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x53, 0x6f, 0x6e, 0x67,
+	0x12, 0x1b, 0x2e, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61, 0x73, 0x65, 0x2e, 0x44, 0x65, 0x6c, 0x65,
+	0x74, 0x65, 0x53, 0x6f, 0x6e, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c, 0x2e,
+	0x70, 0x6c, 0x61, 0x79, 0x63, 0x61, 0x73, 0x65, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x53,
+	0x6f, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x37, 0x0a,
+	0x04, 0x50, 0x6c, 0x61, 0x79, 0x12, 0x15, 0x2e, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61, 0x73, 0x65,
+	0x2e, 0x50, 0x6c, 0x61, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x70,
+	0x6c, 0x61, 0x79, 0x63, 0x61, 0x73, 0x65, 0x2e, 0x50, 0x6c, 0x61, 0x79, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x3a, 0x0a, 0x05, 0x50, 0x61, 0x75, 0x73, 0x65, 0x12,
+	0x16, 0x2e, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61, 0x73, 0x65, 0x2e, 0x50, 0x61, 0x75, 0x73, 0x65,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x17, 0x2e, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61,
+	0x73, 0x65, 0x2e, 0x50, 0x61, 0x75, 0x73, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x00, 0x12, 0x37, 0x0a, 0x04, 0x4e, 0x65, 0x78, 0x74, 0x12, 0x15, 0x2e, 0x70, 0x6c, 0x61,
+	0x79, 0x63, 0x61, 0x73, 0x65, 0x2e, 0x4e, 0x65, 0x78, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x16, 0x2e, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61, 0x73, 0x65, 0x2e, 0x4e, 0x65, 0x78,
+	0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x43, 0x0a, 0x08, 0x50,
+	0x72, 0x65, 0x76, 0x69, 0x6f, 0x75, 0x73, 0x12, 0x19, 0x2e, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61,
+	0x73, 0x65, 0x2e, 0x50, 0x72, 0x65, 0x76, 0x69, 0x6f, 0x75, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x1a, 0x2e, 0x70, 0x6c, 0x61, 0x79, 0x63, 0x61, 0x73, 0x65, 0x2e, 0x50, 0x72,
+	0x65, 0x76, 0x69, 0x6f, 0x75, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
+	0x42, 0x0f, 0x5a, 0x0d, 0x2e, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -648,42 +942,51 @@ func file_playlist_proto_rawDescGZIP() []byte {
 	return file_playlist_proto_rawDescData
 }
 
-var file_playlist_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_playlist_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_playlist_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_playlist_proto_goTypes = []interface{}{
-	(PlayerRequest_StatusPlayer)(0), // 0: playcase.PlayerRequest.StatusPlayer
-	(*Song)(nil),                    // 1: playcase.Song
-	(*AddSongRequest)(nil),          // 2: playcase.AddSongRequest
-	(*AddSongResponse)(nil),         // 3: playcase.AddSongResponse
-	(*ReadSongResponse)(nil),        // 4: playcase.ReadSongResponse
-	(*UpdateSongRequest)(nil),       // 5: playcase.UpdateSongRequest
-	(*UpdateSongResponse)(nil),      // 6: playcase.UpdateSongResponse
-	(*DeleteSongRequest)(nil),       // 7: playcase.DeleteSongRequest
-	(*DeleteSongResponse)(nil),      // 8: playcase.DeleteSongResponse
-	(*PlayerRequest)(nil),           // 9: playcase.PlayerRequest
-	(*Status)(nil),                  // 10: playcase.Status
-	(*emptypb.Empty)(nil),           // 11: google.protobuf.Empty
+	(*Song)(nil),               // 0: playcase.Song
+	(*AddSongRequest)(nil),     // 1: playcase.AddSongRequest
+	(*AddSongResponse)(nil),    // 2: playcase.AddSongResponse
+	(*GetSongsRequest)(nil),    // 3: playcase.GetSongsRequest
+	(*GetSongsResponse)(nil),   // 4: playcase.GetSongsResponse
+	(*UpdateSongRequest)(nil),  // 5: playcase.UpdateSongRequest
+	(*UpdateSongResponse)(nil), // 6: playcase.UpdateSongResponse
+	(*DeleteSongRequest)(nil),  // 7: playcase.DeleteSongRequest
+	(*DeleteSongResponse)(nil), // 8: playcase.DeleteSongResponse
+	(*PlayRequest)(nil),        // 9: playcase.PlayRequest
+	(*PlayResponse)(nil),       // 10: playcase.PlayResponse
+	(*PauseRequest)(nil),       // 11: playcase.PauseRequest
+	(*PauseResponse)(nil),      // 12: playcase.PauseResponse
+	(*NextRequest)(nil),        // 13: playcase.NextRequest
+	(*NextResponse)(nil),       // 14: playcase.NextResponse
+	(*PreviousRequest)(nil),    // 15: playcase.PreviousRequest
+	(*PreviousResponse)(nil),   // 16: playcase.PreviousResponse
 }
 var file_playlist_proto_depIdxs = []int32{
-	1,  // 0: playcase.AddSongRequest.song:type_name -> playcase.Song
-	1,  // 1: playcase.ReadSongResponse.song:type_name -> playcase.Song
-	1,  // 2: playcase.UpdateSongRequest.song:type_name -> playcase.Song
-	0,  // 3: playcase.PlayerRequest.status:type_name -> playcase.PlayerRequest.StatusPlayer
-	2,  // 4: playcase.playCaseServic.AddSong:input_type -> playcase.AddSongRequest
-	11, // 5: playcase.playCaseServic.ReadSong:input_type -> google.protobuf.Empty
-	5,  // 6: playcase.playCaseServic.UpdateSong:input_type -> playcase.UpdateSongRequest
-	7,  // 7: playcase.playCaseServic.DeleteSong:input_type -> playcase.DeleteSongRequest
-	9,  // 8: playcase.playCaseServic.Player:input_type -> playcase.PlayerRequest
-	3,  // 9: playcase.playCaseServic.AddSong:output_type -> playcase.AddSongResponse
-	4,  // 10: playcase.playCaseServic.ReadSong:output_type -> playcase.ReadSongResponse
-	6,  // 11: playcase.playCaseServic.UpdateSong:output_type -> playcase.UpdateSongResponse
-	8,  // 12: playcase.playCaseServic.DeleteSong:output_type -> playcase.DeleteSongResponse
-	10, // 13: playcase.playCaseServic.Player:output_type -> playcase.Status
-	9,  // [9:14] is the sub-list for method output_type
-	4,  // [4:9] is the sub-list for method input_type
-	4,  // [4:4] is the sub-list for extension type_name
-	4,  // [4:4] is the sub-list for extension extendee
-	0,  // [0:4] is the sub-list for field type_name
+	0,  // 0: playcase.AddSongRequest.song:type_name -> playcase.Song
+	0,  // 1: playcase.GetSongsResponse.song:type_name -> playcase.Song
+	0,  // 2: playcase.UpdateSongRequest.song:type_name -> playcase.Song
+	1,  // 3: playcase.MusicPlaylist.AddSong:input_type -> playcase.AddSongRequest
+	3,  // 4: playcase.MusicPlaylist.GetSongs:input_type -> playcase.GetSongsRequest
+	5,  // 5: playcase.MusicPlaylist.UpdateSong:input_type -> playcase.UpdateSongRequest
+	7,  // 6: playcase.MusicPlaylist.DeleteSong:input_type -> playcase.DeleteSongRequest
+	9,  // 7: playcase.MusicPlaylist.Play:input_type -> playcase.PlayRequest
+	11, // 8: playcase.MusicPlaylist.Pause:input_type -> playcase.PauseRequest
+	13, // 9: playcase.MusicPlaylist.Next:input_type -> playcase.NextRequest
+	15, // 10: playcase.MusicPlaylist.Previous:input_type -> playcase.PreviousRequest
+	2,  // 11: playcase.MusicPlaylist.AddSong:output_type -> playcase.AddSongResponse
+	4,  // 12: playcase.MusicPlaylist.GetSongs:output_type -> playcase.GetSongsResponse
+	6,  // 13: playcase.MusicPlaylist.UpdateSong:output_type -> playcase.UpdateSongResponse
+	8,  // 14: playcase.MusicPlaylist.DeleteSong:output_type -> playcase.DeleteSongResponse
+	10, // 15: playcase.MusicPlaylist.Play:output_type -> playcase.PlayResponse
+	12, // 16: playcase.MusicPlaylist.Pause:output_type -> playcase.PauseResponse
+	14, // 17: playcase.MusicPlaylist.Next:output_type -> playcase.NextResponse
+	16, // 18: playcase.MusicPlaylist.Previous:output_type -> playcase.PreviousResponse
+	11, // [11:19] is the sub-list for method output_type
+	3,  // [3:11] is the sub-list for method input_type
+	3,  // [3:3] is the sub-list for extension type_name
+	3,  // [3:3] is the sub-list for extension extendee
+	0,  // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_playlist_proto_init() }
@@ -729,7 +1032,7 @@ func file_playlist_proto_init() {
 			}
 		}
 		file_playlist_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ReadSongResponse); i {
+			switch v := v.(*GetSongsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -741,7 +1044,7 @@ func file_playlist_proto_init() {
 			}
 		}
 		file_playlist_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateSongRequest); i {
+			switch v := v.(*GetSongsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -753,7 +1056,7 @@ func file_playlist_proto_init() {
 			}
 		}
 		file_playlist_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateSongResponse); i {
+			switch v := v.(*UpdateSongRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -765,7 +1068,7 @@ func file_playlist_proto_init() {
 			}
 		}
 		file_playlist_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeleteSongRequest); i {
+			switch v := v.(*UpdateSongResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -777,7 +1080,7 @@ func file_playlist_proto_init() {
 			}
 		}
 		file_playlist_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeleteSongResponse); i {
+			switch v := v.(*DeleteSongRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -789,7 +1092,7 @@ func file_playlist_proto_init() {
 			}
 		}
 		file_playlist_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PlayerRequest); i {
+			switch v := v.(*DeleteSongResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -801,7 +1104,91 @@ func file_playlist_proto_init() {
 			}
 		}
 		file_playlist_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Status); i {
+			switch v := v.(*PlayRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_playlist_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PlayResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_playlist_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PauseRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_playlist_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PauseResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_playlist_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*NextRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_playlist_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*NextResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_playlist_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PreviousRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_playlist_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PreviousResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -818,14 +1205,13 @@ func file_playlist_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_playlist_proto_rawDesc,
-			NumEnums:      1,
-			NumMessages:   10,
+			NumEnums:      0,
+			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_playlist_proto_goTypes,
 		DependencyIndexes: file_playlist_proto_depIdxs,
-		EnumInfos:         file_playlist_proto_enumTypes,
 		MessageInfos:      file_playlist_proto_msgTypes,
 	}.Build()
 	File_playlist_proto = out.File

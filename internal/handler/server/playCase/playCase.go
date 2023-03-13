@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/ninja-dark/test-assigment/grpcService"
 	"github.com/ninja-dark/test-assigment/internal/entity"
 	"github.com/ninja-dark/test-assigment/internal/playlist"
@@ -14,7 +13,7 @@ import (
 type servic struct {
 	playlist playlist.Playlist
 	repo     entity.Repository
-	grpcService.UnimplementedPlayCaseServicServer
+	grpcService.UnimplementedMusicPlaylistServer
 }
 
 func NewServic(playlist playlist.Playlist, repo entity.Repository) *servic {
@@ -27,31 +26,34 @@ func NewServic(playlist playlist.Playlist, repo entity.Repository) *servic {
 func (s *servic) AddSong(ctx context.Context, request *grpcService.AddSongRequest) (*grpcService.AddSongResponse, error) {
 	err := ctx.Err()
 	if err != nil {
-		return nil, fmt.Errorf("context error: %w", err)
+		return &grpcService.AddSongResponse{
+			Success: false,
+		}, fmt.Errorf("context error: %w", err)
 	}
 	t := request.GetSong()
 	song := &entity.Song{
-		Name:     t.Name,
+		Name:     t.Title,
 		Duration: time.Duration(t.Duration),
 	}
 	songPlaylist := playlist.Song{
-		Name:     song.Name,
+		Name:     t.Title,
 		Duration: song.Duration,
 	}
-	if err := s.playlist.AddSong(ctx, &songPlaylist); err != nil {
-		return nil, fmt.Errorf("add song to playlist: %w", err)
-	}
-	p, err := s.repo.Add(ctx, song)
+	track := s.playlist.AddSong(ctx, &songPlaylist) 
+	fmt.Printf(track.Name)
+	err = s.repo.Add(ctx, song)
 	if err != nil {
-		return nil, fmt.Errorf("add song to database: %w", err)
+		return &grpcService.AddSongResponse{
+			Success: false,
+		}, fmt.Errorf("add song to database: %w", err)
 	}
 
 	return &grpcService.AddSongResponse{
-		Id: p.ID,
+		Success: true,
 	}, nil
 }
 
-func (s *servic) ReadSong(ctx context.Context, e *empty.Empty) (*grpcService.ReadSongResponse, error) {
+func (s *servic) GetSongs(ctx context.Context, request *grpcService.GetSongsRequest) (*grpcService.GetSongsResponse, error) {
 	err := ctx.Err()
 	if err != nil {
 		return nil, fmt.Errorf("context error: %w", err)
@@ -62,23 +64,29 @@ func (s *servic) ReadSong(ctx context.Context, e *empty.Empty) (*grpcService.Rea
 	}
 	res := make([]*grpcService.Song, 0, len(t))
 	for _, song := range t {
-		res = append(res, &grpcService.Song{Name: song.Name, Duration: int64(song.Duration)})
+		res = append(res, &grpcService.Song{Title: song.Name, Duration: int64(song.Duration)})
 	}
-	return &grpcService.ReadSongResponse{Song: res}, nil
+	return &grpcService.GetSongsResponse{Song: res}, nil
 }
 
 func (s *servic) UpdateSong(ctx context.Context, request *grpcService.UpdateSongRequest) (*grpcService.UpdateSongResponse, error) {
 	err := ctx.Err()
 	if err != nil {
-		return nil, fmt.Errorf("context error: %w", err)
+		return &grpcService.UpdateSongResponse{
+			Success: false,
+		}, fmt.Errorf("context error: %w", err)
 	}
 	id := request.Song.GetId()
-	name := request.Song.GetName()
+	name := request.Song.GetTitle()
 	duration := request.Song.GetDuration()
 	if id == 0 {
-		return nil, fmt.Errorf("id not found")
+		return &grpcService.UpdateSongResponse{
+			Success: false,
+		}, fmt.Errorf("id not found")
 	} else if name == "" && duration == 0 {
-		return nil, fmt.Errorf("no data for update")
+		return &grpcService.UpdateSongResponse{
+			Success: false,
+		}, fmt.Errorf("no data for update")
 	}
 	song := &entity.Song{
 		ID:       id,
@@ -87,53 +95,106 @@ func (s *servic) UpdateSong(ctx context.Context, request *grpcService.UpdateSong
 	}
 	idSong, err := s.repo.Update(ctx, song)
 	if err != nil {
-		return nil, fmt.Errorf("update song: %w", err)
+		return &grpcService.UpdateSongResponse{
+			Success: false,
+		}, fmt.Errorf("update song: %w", err)
 	}
 	return &grpcService.UpdateSongResponse{
-		Id: idSong,
+		Success: true,
+		Id:      idSong,
 	}, nil
 }
 
 func (s *servic) DeleteSong(ctx context.Context, request *grpcService.DeleteSongRequest) (*grpcService.DeleteSongResponse, error) {
 	err := ctx.Err()
 	if err != nil {
-		return nil, fmt.Errorf("context error: %w", err)
+		return &grpcService.DeleteSongResponse{
+			Success: false,
+		}, fmt.Errorf("context error: %w", err)
 	}
 	id := request.GetId()
 	if id == 0 {
-		return nil, fmt.Errorf("id not found")
+		return &grpcService.DeleteSongResponse{
+			Success: false,
+		}, fmt.Errorf("id not found")
 	}
 	if err := s.repo.Delete(ctx, id); err != nil {
-		return nil, fmt.Errorf("delete song: %w", err)
+		return &grpcService.DeleteSongResponse{
+			Success: false,
+		}, fmt.Errorf("delete song: %w", err)
 	}
 	return &grpcService.DeleteSongResponse{
-		Id: id,
+		Success: true,
 	}, nil
 }
 
-func (s *servic) Player(ctx context.Context, request *grpcService.PlayerRequest) (*grpcService.Status, error) {
+func (s *servic) Play(ctx context.Context, request *grpcService.PlayRequest) (*grpcService.PlayResponse, error) {
 	err := ctx.Err()
 	if err != nil {
-		return nil, fmt.Errorf("context error: %w", err)
+		return &grpcService.PlayResponse{
+			Success: false,
+		}, fmt.Errorf("context error: %w", err)
 	}
-	var song *playlist.Song
-	st := "action completed"
-	status := request.GetStatus()
-	switch status {
-	case grpcService.PlayerRequest_play:
-		song, err = s.playlist.Play(ctx)
-	case grpcService.PlayerRequest_pause:
-		song, err = s.playlist.Pause(ctx)
-	case grpcService.PlayerRequest_next:
-		song, err = s.playlist.Next(ctx)
-	case grpcService.PlayerRequest_prev:
-		song, err = s.playlist.Prev(ctx)
-	}
+
+	song, err := s.playlist.Play(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("delete song: %w", err)
+		return &grpcService.PlayResponse{
+			Success: false,
+		}, fmt.Errorf("play error: %w", err)
 	}
-	return &grpcService.Status{
-		Status: st,
-		Name:   song.Name,
+	name := song.Name
+	return &grpcService.PlayResponse{
+		Success: true,
+		Name:    name,
+	}, nil
+}
+
+func (s *servic) Pause(ctx context.Context, request *grpcService.PauseRequest) (*grpcService.PauseResponse, error) {
+	err := ctx.Err()
+	if err != nil {
+		return &grpcService.PauseResponse{
+			Success: false,
+		}, fmt.Errorf("context error: %w", err)
+	}
+	err = s.playlist.Pause(ctx)
+	if err != nil {
+		return &grpcService.PauseResponse{
+			Success: false,
+		}, fmt.Errorf("pause error: %w", err)
+	}
+	return &grpcService.PauseResponse{Success: true}, nil
+}
+
+func (s *servic) Next(ctx context.Context, request *grpcService.NextRequest) (*grpcService.NextResponse, error) {
+	err := ctx.Err()
+	if err != nil {
+		return &grpcService.NextResponse{
+			Success: false,
+		}, fmt.Errorf("context error: %w", err)
+	}
+	song, err := s.playlist.Next(ctx)
+	if err != nil {
+		return &grpcService.NextResponse{
+			Success: false,
+		}, fmt.Errorf("next song error: %w", err)
+	}
+	
+	return &grpcService.NextResponse{
+		Success: true,
+		Name:    song.Name,
+	}, nil
+}
+
+func (s *servic) Previous(ctx context.Context, request *grpcService.PreviousRequest) (*grpcService.PreviousResponse, error) {
+	err := ctx.Err()
+	if err != nil {
+		return &grpcService.PreviousResponse{
+			Success: false,
+		}, fmt.Errorf("context error: %w", err)
+	}
+	song, err := s.playlist.Prev(ctx)
+	return &grpcService.PreviousResponse{
+		Success: true,
+		Name:    song.Name,
 	}, nil
 }

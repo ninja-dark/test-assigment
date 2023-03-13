@@ -4,6 +4,7 @@ import (
 	"container/list"
 	"context"
 	"errors"
+	"fmt"
 	"sync"
 )
 
@@ -39,6 +40,7 @@ func (d *doubleLinkedList) PushBack(ctx context.Context, song *Song) *Song {
 
 	t := d.track.PushBack(song)
 	track := t.Value.(*Song)
+	fmt.Printf(track.Name)
 	return track
 }
 

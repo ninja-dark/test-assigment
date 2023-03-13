@@ -13,7 +13,7 @@ type Song struct {
 
 type Repository interface {
 	GetList(ctx context.Context) ([]*Song, error)
-	Add(ctx context.Context, s *Song) (*Song, error)
+	Add(ctx context.Context, s *Song) error
 	Update(ctx context.Context, s *Song) (int64, error)
 	Delete(ctx context.Context, id int64) error
 }

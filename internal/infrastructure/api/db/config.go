@@ -13,16 +13,17 @@ type Config struct {
 	Port     string
 	User     string
 	Password string
-	DBName   string
+	DBName string
 }
 
 func NewPoolConfig(cfg *Config) (*pgxpool.Config, error) {
-	connStr := fmt.Sprintf("%s://%s:%s@%s:%s/%s?sslmode=disable&connect_timeout=%d",
+	connStr := fmt.Sprintf("%s://%s:%s@%s:%s/%s?sslmode=disable",
 		"postgres",
 		url.QueryEscape(cfg.User),
 		url.QueryEscape(cfg.Password),
 		cfg.Host,
 		cfg.Port,
+		cfg.DBName,
 	)
 
 	poolConfig, err := pgxpool.ParseConfig(connStr)

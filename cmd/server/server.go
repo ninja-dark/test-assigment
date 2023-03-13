@@ -11,6 +11,7 @@ import (
 	"github.com/ninja-dark/test-assigment/internal/playlist"
 	"github.com/pressly/goose"
 	"google.golang.org/grpc"
+	_ "github.com/lib/pq"
 )
 
 var dbConfig = &db.Config{
@@ -18,7 +19,7 @@ var dbConfig = &db.Config{
 	Port:     "5432",
 	User:     "postgres",
 	Password: "postgres",
-	DBName:   "playlist",
+	DBName: "",
 }
 
 func main() {
@@ -37,7 +38,7 @@ func main() {
 
 	mig, err := sql.Open("postgres", poolConf.ConnString())
 	if err != nil {
-		log.Fatal("failed goose: %v", err)
+		log.Fatal("failed to open: %w", err)
 	}
 	err = mig.Ping()
 	if err != nil {
@@ -54,7 +55,7 @@ func main() {
 	//start grpc
 	server := grpc.NewServer()
 	plServer := playcase.NewServic(playlist, repo)
-	grpcService.RegisterPlayCaseServicServer(server, plServer)
+	grpcService.RegisterMusicPlaylistServer(server, plServer)
 
 	lis, err := net.Listen("tcp", ":8080")
 	if err != nil {

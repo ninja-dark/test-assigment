@@ -11,7 +11,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -19,230 +18,338 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// PlayCaseServicClient is the client API for PlayCaseServic service.
+// MusicPlaylistClient is the client API for MusicPlaylist service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type PlayCaseServicClient interface {
+type MusicPlaylistClient interface {
 	AddSong(ctx context.Context, in *AddSongRequest, opts ...grpc.CallOption) (*AddSongResponse, error)
-	ReadSong(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ReadSongResponse, error)
+	GetSongs(ctx context.Context, in *GetSongsRequest, opts ...grpc.CallOption) (*GetSongsResponse, error)
 	UpdateSong(ctx context.Context, in *UpdateSongRequest, opts ...grpc.CallOption) (*UpdateSongResponse, error)
 	DeleteSong(ctx context.Context, in *DeleteSongRequest, opts ...grpc.CallOption) (*DeleteSongResponse, error)
-	Player(ctx context.Context, in *PlayerRequest, opts ...grpc.CallOption) (*Status, error)
+	Play(ctx context.Context, in *PlayRequest, opts ...grpc.CallOption) (*PlayResponse, error)
+	Pause(ctx context.Context, in *PauseRequest, opts ...grpc.CallOption) (*PauseResponse, error)
+	Next(ctx context.Context, in *NextRequest, opts ...grpc.CallOption) (*NextResponse, error)
+	Previous(ctx context.Context, in *PreviousRequest, opts ...grpc.CallOption) (*PreviousResponse, error)
 }
 
-type playCaseServicClient struct {
+type musicPlaylistClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewPlayCaseServicClient(cc grpc.ClientConnInterface) PlayCaseServicClient {
-	return &playCaseServicClient{cc}
+func NewMusicPlaylistClient(cc grpc.ClientConnInterface) MusicPlaylistClient {
+	return &musicPlaylistClient{cc}
 }
 
-func (c *playCaseServicClient) AddSong(ctx context.Context, in *AddSongRequest, opts ...grpc.CallOption) (*AddSongResponse, error) {
+func (c *musicPlaylistClient) AddSong(ctx context.Context, in *AddSongRequest, opts ...grpc.CallOption) (*AddSongResponse, error) {
 	out := new(AddSongResponse)
-	err := c.cc.Invoke(ctx, "/playcase.playCaseServic/AddSong", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/playcase.MusicPlaylist/AddSong", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *playCaseServicClient) ReadSong(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ReadSongResponse, error) {
-	out := new(ReadSongResponse)
-	err := c.cc.Invoke(ctx, "/playcase.playCaseServic/ReadSong", in, out, opts...)
+func (c *musicPlaylistClient) GetSongs(ctx context.Context, in *GetSongsRequest, opts ...grpc.CallOption) (*GetSongsResponse, error) {
+	out := new(GetSongsResponse)
+	err := c.cc.Invoke(ctx, "/playcase.MusicPlaylist/GetSongs", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *playCaseServicClient) UpdateSong(ctx context.Context, in *UpdateSongRequest, opts ...grpc.CallOption) (*UpdateSongResponse, error) {
+func (c *musicPlaylistClient) UpdateSong(ctx context.Context, in *UpdateSongRequest, opts ...grpc.CallOption) (*UpdateSongResponse, error) {
 	out := new(UpdateSongResponse)
-	err := c.cc.Invoke(ctx, "/playcase.playCaseServic/UpdateSong", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/playcase.MusicPlaylist/UpdateSong", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *playCaseServicClient) DeleteSong(ctx context.Context, in *DeleteSongRequest, opts ...grpc.CallOption) (*DeleteSongResponse, error) {
+func (c *musicPlaylistClient) DeleteSong(ctx context.Context, in *DeleteSongRequest, opts ...grpc.CallOption) (*DeleteSongResponse, error) {
 	out := new(DeleteSongResponse)
-	err := c.cc.Invoke(ctx, "/playcase.playCaseServic/DeleteSong", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/playcase.MusicPlaylist/DeleteSong", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *playCaseServicClient) Player(ctx context.Context, in *PlayerRequest, opts ...grpc.CallOption) (*Status, error) {
-	out := new(Status)
-	err := c.cc.Invoke(ctx, "/playcase.playCaseServic/Player", in, out, opts...)
+func (c *musicPlaylistClient) Play(ctx context.Context, in *PlayRequest, opts ...grpc.CallOption) (*PlayResponse, error) {
+	out := new(PlayResponse)
+	err := c.cc.Invoke(ctx, "/playcase.MusicPlaylist/Play", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// PlayCaseServicServer is the server API for PlayCaseServic service.
-// All implementations must embed UnimplementedPlayCaseServicServer
+func (c *musicPlaylistClient) Pause(ctx context.Context, in *PauseRequest, opts ...grpc.CallOption) (*PauseResponse, error) {
+	out := new(PauseResponse)
+	err := c.cc.Invoke(ctx, "/playcase.MusicPlaylist/Pause", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *musicPlaylistClient) Next(ctx context.Context, in *NextRequest, opts ...grpc.CallOption) (*NextResponse, error) {
+	out := new(NextResponse)
+	err := c.cc.Invoke(ctx, "/playcase.MusicPlaylist/Next", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *musicPlaylistClient) Previous(ctx context.Context, in *PreviousRequest, opts ...grpc.CallOption) (*PreviousResponse, error) {
+	out := new(PreviousResponse)
+	err := c.cc.Invoke(ctx, "/playcase.MusicPlaylist/Previous", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// MusicPlaylistServer is the server API for MusicPlaylist service.
+// All implementations must embed UnimplementedMusicPlaylistServer
 // for forward compatibility
-type PlayCaseServicServer interface {
+type MusicPlaylistServer interface {
 	AddSong(context.Context, *AddSongRequest) (*AddSongResponse, error)
-	ReadSong(context.Context, *emptypb.Empty) (*ReadSongResponse, error)
+	GetSongs(context.Context, *GetSongsRequest) (*GetSongsResponse, error)
 	UpdateSong(context.Context, *UpdateSongRequest) (*UpdateSongResponse, error)
 	DeleteSong(context.Context, *DeleteSongRequest) (*DeleteSongResponse, error)
-	Player(context.Context, *PlayerRequest) (*Status, error)
-	mustEmbedUnimplementedPlayCaseServicServer()
+	Play(context.Context, *PlayRequest) (*PlayResponse, error)
+	Pause(context.Context, *PauseRequest) (*PauseResponse, error)
+	Next(context.Context, *NextRequest) (*NextResponse, error)
+	Previous(context.Context, *PreviousRequest) (*PreviousResponse, error)
+	mustEmbedUnimplementedMusicPlaylistServer()
 }
 
-// UnimplementedPlayCaseServicServer must be embedded to have forward compatible implementations.
-type UnimplementedPlayCaseServicServer struct {
+// UnimplementedMusicPlaylistServer must be embedded to have forward compatible implementations.
+type UnimplementedMusicPlaylistServer struct {
 }
 
-func (UnimplementedPlayCaseServicServer) AddSong(context.Context, *AddSongRequest) (*AddSongResponse, error) {
+func (UnimplementedMusicPlaylistServer) AddSong(context.Context, *AddSongRequest) (*AddSongResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddSong not implemented")
 }
-func (UnimplementedPlayCaseServicServer) ReadSong(context.Context, *emptypb.Empty) (*ReadSongResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ReadSong not implemented")
+func (UnimplementedMusicPlaylistServer) GetSongs(context.Context, *GetSongsRequest) (*GetSongsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSongs not implemented")
 }
-func (UnimplementedPlayCaseServicServer) UpdateSong(context.Context, *UpdateSongRequest) (*UpdateSongResponse, error) {
+func (UnimplementedMusicPlaylistServer) UpdateSong(context.Context, *UpdateSongRequest) (*UpdateSongResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateSong not implemented")
 }
-func (UnimplementedPlayCaseServicServer) DeleteSong(context.Context, *DeleteSongRequest) (*DeleteSongResponse, error) {
+func (UnimplementedMusicPlaylistServer) DeleteSong(context.Context, *DeleteSongRequest) (*DeleteSongResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteSong not implemented")
 }
-func (UnimplementedPlayCaseServicServer) Player(context.Context, *PlayerRequest) (*Status, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Player not implemented")
+func (UnimplementedMusicPlaylistServer) Play(context.Context, *PlayRequest) (*PlayResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Play not implemented")
 }
-func (UnimplementedPlayCaseServicServer) mustEmbedUnimplementedPlayCaseServicServer() {}
+func (UnimplementedMusicPlaylistServer) Pause(context.Context, *PauseRequest) (*PauseResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Pause not implemented")
+}
+func (UnimplementedMusicPlaylistServer) Next(context.Context, *NextRequest) (*NextResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Next not implemented")
+}
+func (UnimplementedMusicPlaylistServer) Previous(context.Context, *PreviousRequest) (*PreviousResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Previous not implemented")
+}
+func (UnimplementedMusicPlaylistServer) mustEmbedUnimplementedMusicPlaylistServer() {}
 
-// UnsafePlayCaseServicServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to PlayCaseServicServer will
+// UnsafeMusicPlaylistServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to MusicPlaylistServer will
 // result in compilation errors.
-type UnsafePlayCaseServicServer interface {
-	mustEmbedUnimplementedPlayCaseServicServer()
+type UnsafeMusicPlaylistServer interface {
+	mustEmbedUnimplementedMusicPlaylistServer()
 }
 
-func RegisterPlayCaseServicServer(s grpc.ServiceRegistrar, srv PlayCaseServicServer) {
-	s.RegisterService(&PlayCaseServic_ServiceDesc, srv)
+func RegisterMusicPlaylistServer(s grpc.ServiceRegistrar, srv MusicPlaylistServer) {
+	s.RegisterService(&MusicPlaylist_ServiceDesc, srv)
 }
 
-func _PlayCaseServic_AddSong_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MusicPlaylist_AddSong_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AddSongRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PlayCaseServicServer).AddSong(ctx, in)
+		return srv.(MusicPlaylistServer).AddSong(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/playcase.playCaseServic/AddSong",
+		FullMethod: "/playcase.MusicPlaylist/AddSong",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PlayCaseServicServer).AddSong(ctx, req.(*AddSongRequest))
+		return srv.(MusicPlaylistServer).AddSong(ctx, req.(*AddSongRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PlayCaseServic_ReadSong_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+func _MusicPlaylist_GetSongs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSongsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PlayCaseServicServer).ReadSong(ctx, in)
+		return srv.(MusicPlaylistServer).GetSongs(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/playcase.playCaseServic/ReadSong",
+		FullMethod: "/playcase.MusicPlaylist/GetSongs",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PlayCaseServicServer).ReadSong(ctx, req.(*emptypb.Empty))
+		return srv.(MusicPlaylistServer).GetSongs(ctx, req.(*GetSongsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PlayCaseServic_UpdateSong_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MusicPlaylist_UpdateSong_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateSongRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PlayCaseServicServer).UpdateSong(ctx, in)
+		return srv.(MusicPlaylistServer).UpdateSong(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/playcase.playCaseServic/UpdateSong",
+		FullMethod: "/playcase.MusicPlaylist/UpdateSong",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PlayCaseServicServer).UpdateSong(ctx, req.(*UpdateSongRequest))
+		return srv.(MusicPlaylistServer).UpdateSong(ctx, req.(*UpdateSongRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PlayCaseServic_DeleteSong_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MusicPlaylist_DeleteSong_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteSongRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PlayCaseServicServer).DeleteSong(ctx, in)
+		return srv.(MusicPlaylistServer).DeleteSong(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/playcase.playCaseServic/DeleteSong",
+		FullMethod: "/playcase.MusicPlaylist/DeleteSong",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PlayCaseServicServer).DeleteSong(ctx, req.(*DeleteSongRequest))
+		return srv.(MusicPlaylistServer).DeleteSong(ctx, req.(*DeleteSongRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PlayCaseServic_Player_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PlayerRequest)
+func _MusicPlaylist_Play_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PlayRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PlayCaseServicServer).Player(ctx, in)
+		return srv.(MusicPlaylistServer).Play(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/playcase.playCaseServic/Player",
+		FullMethod: "/playcase.MusicPlaylist/Play",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PlayCaseServicServer).Player(ctx, req.(*PlayerRequest))
+		return srv.(MusicPlaylistServer).Play(ctx, req.(*PlayRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// PlayCaseServic_ServiceDesc is the grpc.ServiceDesc for PlayCaseServic service.
+func _MusicPlaylist_Pause_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PauseRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MusicPlaylistServer).Pause(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/playcase.MusicPlaylist/Pause",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MusicPlaylistServer).Pause(ctx, req.(*PauseRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MusicPlaylist_Next_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NextRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MusicPlaylistServer).Next(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/playcase.MusicPlaylist/Next",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MusicPlaylistServer).Next(ctx, req.(*NextRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MusicPlaylist_Previous_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PreviousRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MusicPlaylistServer).Previous(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/playcase.MusicPlaylist/Previous",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MusicPlaylistServer).Previous(ctx, req.(*PreviousRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// MusicPlaylist_ServiceDesc is the grpc.ServiceDesc for MusicPlaylist service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var PlayCaseServic_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "playcase.playCaseServic",
-	HandlerType: (*PlayCaseServicServer)(nil),
+var MusicPlaylist_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "playcase.MusicPlaylist",
+	HandlerType: (*MusicPlaylistServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "AddSong",
-			Handler:    _PlayCaseServic_AddSong_Handler,
+			Handler:    _MusicPlaylist_AddSong_Handler,
 		},
 		{
-			MethodName: "ReadSong",
-			Handler:    _PlayCaseServic_ReadSong_Handler,
+			MethodName: "GetSongs",
+			Handler:    _MusicPlaylist_GetSongs_Handler,
 		},
 		{
 			MethodName: "UpdateSong",
-			Handler:    _PlayCaseServic_UpdateSong_Handler,
+			Handler:    _MusicPlaylist_UpdateSong_Handler,
 		},
 		{
 			MethodName: "DeleteSong",
-			Handler:    _PlayCaseServic_DeleteSong_Handler,
+			Handler:    _MusicPlaylist_DeleteSong_Handler,
 		},
 		{
-			MethodName: "Player",
-			Handler:    _PlayCaseServic_Player_Handler,
+			MethodName: "Play",
+			Handler:    _MusicPlaylist_Play_Handler,
+		},
+		{
+			MethodName: "Pause",
+			Handler:    _MusicPlaylist_Pause_Handler,
+		},
+		{
+			MethodName: "Next",
+			Handler:    _MusicPlaylist_Next_Handler,
+		},
+		{
+			MethodName: "Previous",
+			Handler:    _MusicPlaylist_Previous_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

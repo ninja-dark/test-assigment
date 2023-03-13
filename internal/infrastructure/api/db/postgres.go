@@ -33,17 +33,17 @@ func (r *pgRepository) GetList(ctx context.Context) ([]*entity.Song, error) {
 	return pl, nil
 }
 
-func (r *pgRepository) Add(ctx context.Context, s *entity.Song) (*entity.Song, error) {
-	newSong := *s
+func (r *pgRepository) Add(ctx context.Context, s *entity.Song) error {
+
 	_, err := r.pool.Exec(
 		ctx, `INSERT INTO playlist (
 			name, duration
 		) VALUES (
-			&2, -- name
-			&3, -- duration
+			$1, 
+			$2
 		)
-	`, newSong.Name, newSong.Duration)
-	return &newSong, err
+	`, s.Name, s.Duration)
+	return err
 }
 
 func (r *pgRepository) Update(ctx context.Context, s *entity.Song) (int64, error) {
